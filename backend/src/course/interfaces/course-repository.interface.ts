@@ -6,4 +6,6 @@ export interface ICourseRepository {
   findById(id: string): Promise<Course | null>;
 
   save(book: Course): Promise<Course>;
+
+  findAll(): Promise<Course | null>;
 }
