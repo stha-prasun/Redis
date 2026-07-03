@@ -1,0 +1,14 @@
+import { Controller, Get } from '@nestjs/common';
+import { RedisService } from './redis.service';
+
+@Controller('redis')
+export class RedisController {
+  constructor(private readonly redisService: RedisService) {}
+
+  @Get()
+  async test() {
+    await this.redisService.set('message', 'Hello Redis');
+
+    return this.redisService.get('message');
+  }
+}
