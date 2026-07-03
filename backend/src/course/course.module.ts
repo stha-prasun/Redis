@@ -7,9 +7,10 @@ import { TypeOrmCourseRepository } from './repositories/typeorm-course.repositor
 import { COURSE_REPOSITORY } from './constants/course.constants';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Course } from './entities/course.entity';
+import { RabbitmqModule } from 'src/rabbitmq/rabbitmq.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Course]), RedisModule],
+  imports: [TypeOrmModule.forFeature([Course]), RedisModule, RabbitmqModule],
   controllers: [CourseController],
   providers: [
     CourseService,

@@ -4,12 +4,14 @@ import { COURSE_REPOSITORY } from './constants/course.constants';
 import type { ICourseRepository } from './interfaces/course-repository.interface';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { RedisService } from 'src/redis/redis.service';
+import { PurchasePublisher } from 'src/rabbitmq/rabbitmq.publisher';
 
 @Injectable()
 export class CourseService {
   constructor(
     private readonly bookFactory: CourseFactory,
     private readonly redisService: RedisService,
+    private readonly publisher: PurchasePublisher,
 
     @Inject(COURSE_REPOSITORY)
     private readonly repository: ICourseRepository,
@@ -71,5 +73,12 @@ export class CourseService {
     console.log('Cache up to date');
 
     return cachedCourses;
+  }
+
+  async purchaseCourse() {
+    await this.publisher.publishPurchase({
+      userId: 1,
+      courseId: 10,
+    });
   }
 }

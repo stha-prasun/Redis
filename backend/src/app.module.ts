@@ -5,6 +5,7 @@ import { RedisModule } from './redis/redis.module';
 import { CourseModule } from './course/course.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
     RedisModule,
     CourseModule,
+    RabbitmqModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,5 +7,5 @@ export interface ICourseRepository {
 
   save(book: Course): Promise<Course>;
 
-  findAll(): Promise<Course | null>;
+  findAll(): Promise<Course[] | null>;
 }

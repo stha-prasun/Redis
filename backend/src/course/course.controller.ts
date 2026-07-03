@@ -20,4 +20,13 @@ export class CourseController {
   getAll() {
     return this.courseService.findAll();
   }
+
+  @Post('purchase')
+  async purchase() {
+    await this.courseService.purchaseCourse();
+
+    return {
+      message: 'Purchase event published',
+    };
+  }
 }

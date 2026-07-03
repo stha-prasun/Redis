@@ -24,4 +24,8 @@ export class TypeOrmCourseRepository implements ICourseRepository {
   save(course: Course) {
     return this.repository.save(course);
   }
+
+  findAll(): Promise<Course[] | null> {
+      return this.repository.find();
+  }
 }
