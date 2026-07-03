@@ -1,29 +1,47 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { CourseFactory } from './factories/course.factory';
+import { COURSE_REPOSITORY } from './constants/course.constants';
+import type { ICourseRepository } from './interfaces/course-repository.interface';
 import { CreateCourseDto } from './dto/create-course.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
 import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class CourseService {
-  constructor(private readonly redisService: RedisService) {}
+  constructor(
+    private readonly bookFactory: CourseFactory,
+    private readonly redisService: RedisService,
 
-  create(createCourseDto: CreateCourseDto) {
-    return 'This action adds a new course';
+    @Inject(COURSE_REPOSITORY)
+    private readonly repository: ICourseRepository,
+  ) {}
+
+  create(dto: CreateCourseDto) {
+    const book = this.bookFactory.create(dto);
+
+    return this.repository.create(book);
   }
 
-  findAll() {
-    return `This action returns all course`;
-  }
+  async findOne(id: string) {
+    const cacheKey = `course:${id}`;
 
-  findOne(id: number) {
-    return `This action returns a #${id} course`;
-  }
+    const cached = await this.redisService.get(cacheKey);
 
-  update(id: number, updateCourseDto: UpdateCourseDto) {
-    return `This action updates a #${id} course`;
-  }
+    if (cached) {
+      console.log('Cache Hit');
 
-  remove(id: number) {
-    return `This action removes a #${id} course`;
+      return JSON.parse(cached);
+    }
+
+    console.log('Cache Miss');
+
+    const course = await this.repository.findById(id);
+
+    if (!course) {
+      return null;
+    }
+
+    await this.redisService.set(cacheKey, JSON.stringify(course), 300);
+
+    return course;
   }
 }

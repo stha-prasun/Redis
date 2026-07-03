@@ -9,7 +9,12 @@ export class RedisService {
     private readonly redis: Redis,
   ) {}
 
-  async set(key: string, value: string) {
+  async set(key: string, value: string, ttl?: number) {
+    if (ttl) {
+      await this.redis.set(key, value, 'EX', ttl);
+      return;
+    }
+
     await this.redis.set(key, value);
   }
 
